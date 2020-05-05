@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OfferRequest;
 use App\Models\Offer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class CrudController extends Controller
 {
@@ -22,42 +22,33 @@ class CrudController extends Controller
         return Offer::get();
     }
 
-    public function store(Request $request)
+    public function store(OfferRequest $request)
     {
-        $rules = $this->getRules();
-        $messages = $this->getMessages();
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput($request->all());
-        }
         Offer::create([
-            'name' => $request['name'],
-            'price' => $request['price'],
+            'name_ar' => $request->name_ar,
+            'name_en' => $request->name_en,
+            'price' => $request->price,
+            'details_ar' => $request->details_ar,
+            'details_en' => $request->details_en,
         ]);
-        return redirect() -> back()->with(['success'=>'تم إضافة العرض بنجاح']);
+
+        return redirect()->back()->with(['success' => 'تم اضافه العرض بنجاح ']);
+    }
+    public function getAllOffers()
+    {
+        $offers = Offer::select('id',
+            'price',
+            'photo',
+            'name_' . LaravelLocalization::getCurrentLocale() . ' as name',
+            'details_' . LaravelLocalization::getCurrentLocale() . ' as details'
+        )->get(); // return collection
+        return view('offers.all', compact('offers'));
     }
 
     public function create()
     {
         return view('offers.create');
-    }
-
-    protected function getMessages()
-    {
-        return [
-            'name.required' => __('messages.offer name required'),
-            'name.unique' => __('messages.offer name must be unique'),
-            'price.required' => __('messages.Offer Price'),
-        ];
-    }
-
-    protected function getRules()
-    {
-        return [
-            'name' => 'required|max:100|unique:offers,name',
-            'price' => 'required|numeric'
-        ];
     }
 
 }
