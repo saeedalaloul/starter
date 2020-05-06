@@ -130,7 +130,7 @@
             <td><img  style="width: 90px; height: 90px;" src="{{asset('images/offers/'.$offer->photo)}}"></td>
 
             <td>
-                <a href="{{url('offers/edit/'.$offer -> id)}}" class="btn btn-success"> {{__('messages.update')}}</a>
+                <a href="{{route('offers.edit',$offer -> id)}}" class="btn btn-success"> {{__('messages.update')}}</a>
             </td>
 
         </tr>

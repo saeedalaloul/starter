@@ -12,6 +12,10 @@
 */
 
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
 Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
@@ -29,6 +33,10 @@ Route::group(
     Route::group(['prefix' => 'offers'], function () {
         Route::get('create', 'CrudController@create');
         Route::post('store', 'CrudController@store')->name('offers.store');
+
+        Route::get('edit/{offer_id}', 'CrudController@edit')->name('offers.edit');
+        Route::post('update', 'CrudController@UpdateOffer')->name('offers.update');
+
         Route::get('all', 'CrudController@getAllOffers')->name('offers.all');
     });
 });
